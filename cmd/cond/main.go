@@ -92,9 +92,66 @@ func exampleSignal() {
 	wg.Wait()
 }
 
+
+
+func producerConsumer() {
+	var capacity = 2
+	// initialize as empty with initial capacity of two
+	var queue = make([]interface{}, 0, capacity)
+	var c = sync.NewCond(&sync.Mutex{})
+
+	popQueue := func() {
+		time.Sleep(500 * time.Millisecond)
+
+		c.L.Lock()
+		defer c.L.Unlock()
+
+
+		// if there is space in the queue
+		if len(queue) > 0 {
+			// remove first item in queue
+			queue = queue[1:]
+
+			// do something with it
+			time.Sleep(1 *time.Second)
+			fmt.Println("Removed item. Queue length:", len(queue))
+		}
+
+		c.Signal()
+	}
+
+
+	for range 5 {
+		c.L.Lock()
+
+		// we have to guard against spurious wakeups
+		for len(queue) == capacity { // full
+			fmt.Println("Producer waiting: queue full.")
+			c.Wait()
+		}
+
+
+		fmt.Println("Producer adding item.")
+
+		// produce item
+		queue = append(queue, struct{}{})
+
+		// add a worker to do work on the new item
+		go popQueue()
+		
+		c.L.Unlock()
+	}
+
+
+
+}
+
+func broadcastExample() {
+
+}
+
 func main() {
-	fmt.Println("Running broadcast example")
-	exampleBroadcast()
-	// fmt.Println("Running signal example")
-	// exampleSignal()
+
+	
+	
 }
