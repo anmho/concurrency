@@ -10,19 +10,17 @@ type Button struct {
 }
 
 func main() {
-	
+	button := Button{Clicked: sync.NewCond(&sync.Mutex{})}
 
-	
+	var clickRegistered sync.WaitGroup
 
 	subscribe := func (c *sync.Cond, fn func()) {
 		// we wait until the goroutine is "running" because that means it successfully registerd
 		// once its running then it waits for the cond event broadcast
 		var goroutineRunning sync.WaitGroup
 
-		goroutineRunning.Add(1)
-		go func() {
-			// mark as done because the handler is initiated/registered/waiting on cond now
-			goroutineRunning.Done()
+		func() {
+			goroutineRunning.Add(1)
 			c.L.Lock()
 			defer c.L.Unlock()
 
@@ -34,10 +32,7 @@ func main() {
 		goroutineRunning.Wait()
 	}
 
-	var clickRegistered sync.WaitGroup
 	buttonClicked := sync.NewCond(&sync.Mutex{})
-	button := Button{Clicked: buttonClicked}
-	clickRegistered.Add(3)
 	subscribe(buttonClicked, func() {
 		fmt.Println("Maximizing window")
 		clickRegistered.Done()
@@ -53,23 +48,15 @@ func main() {
 		clickRegistered.Done()
 	})
 
-
 	// wait for all click event handlers to be registered
 
 	// at this point they are all registered and waiting
 
-	// simulate via button click
+	// simulate button click
 	fmt.Println("simulating button click event")
-	
 	button.Clicked.Broadcast()
 
-	// wait until click events actually fired
 	clickRegistered.Wait()
 
-	fmt.Println("button click event handlers done")
-
-	// it only fires once though. we would need an event loop likely
-	// probably also an event queue or channel
-
-	
+	fmt.Println("button click")
 }
