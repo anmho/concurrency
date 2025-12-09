@@ -5,29 +5,53 @@ import (
 	"time"
 )
 
-func main() {
-	done := make(chan interface{})
 
-	go func (done chan interface{}){
-		for {
-			select {
-			case <- done:
-				return
-			default:
-				fmt.Println("do work")
-				time.Sleep(3 * time.Second)
+func main() {
+	// launches a goroutine that does work and returns a channel that tells us when its cancelled
+	doWork := func (
+		done <- chan interface{},
+		strings <- chan string,
+	) <-chan interface{} {
+		terminated := make(chan interface{})
+		
+		go func() {
+			fmt.Println("doing work")
+			defer fmt.Println("doWork exited.")
+			defer close(terminated)
+
+			for {
+				// none are higher priority than the other
+				// blocks if none of the channels have anything
+				select {
+				case s := <-strings:
+					fmt.Println("doing string")
+					fmt.Println(s)
+				case <-done: // complete when given the signal
+					fmt.Println("done")
+					return
+				}
 			}
-		}
-	}(done)
+		}()
+
+
+		return terminated
+	}
 
 	
-	// signal completion after 30 seconds
 
-	fmt.Println("cancelling")
-	time.Sleep(10 * time.Second)
-	fmt.Println("signalling to complete")
-	// same thing as
-	// done <- struct{}{}
-	// the receiver will read a zero value
-	close(done)
+	done := make(chan interface{})
+
+	stringsChan := make(chan string, 4)
+	stringsChan <- "a"
+	stringsChan <- "b"
+	stringsChan <- "c"
+
+	terminated := doWork(done, stringsChan)
+	go func() {
+		time.Sleep(5 * time.Second)
+		close(done)// or done <- struct{}{}
+	}()
+	<-terminated
+
+	
 }
