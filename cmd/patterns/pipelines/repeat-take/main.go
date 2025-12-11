@@ -32,9 +32,9 @@ func main() {
 	// take first n values of input stream and pass to the output channel
 	take := func(
 		done <-chan interface{},
-		valueStream <- chan interface{},
+		valueStream <-chan interface{},
 		num int,
-	) <- chan interface{} {
+	) <-chan interface{} {
 		takeStream := make(chan interface{})
 		go func() {
 			defer close(takeStream)
@@ -50,15 +50,15 @@ func main() {
 	}
 
 	repeatFn := func(
-		done <- chan interface{},
+		done <-chan interface{},
 		fn func() interface{},
 	) <-chan interface{} {
 		valueStream := make(chan interface{})
 		go func() {
 			defer close(valueStream)
 			for {
-				select{
-				case <- done:
+				select {
+				case <-done:
 					return
 				case valueStream <- fn():
 				}
@@ -66,7 +66,6 @@ func main() {
 		}()
 		return valueStream
 	}
-
 
 	done := make(chan interface{})
 	defer close(done)
@@ -81,7 +80,7 @@ func main() {
 		return rand.Int()
 	}
 
-	for v := range take(done, repeatFn(done,  randFn), 2) {
+	for v := range take(done, repeatFn(done, randFn), 2) {
 		fmt.Println(v)
 	}
 }

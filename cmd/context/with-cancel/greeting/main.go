@@ -1,3 +1,4 @@
+package greeting
 package main
 
 import (
@@ -12,7 +13,7 @@ func main() {
 	var wg sync.WaitGroup
 	// done := make(chan interface{})
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel() // trigger the cancel when we are done. indicate to goroutines that we should clean up or are done.
+	defer cancel()
 	// defer close(done)
 
 	// say hello and goodbye concurrently
@@ -60,11 +61,6 @@ func printFarewell(ctx context.Context) error {
 }
 
 func genGreeting(ctx context.Context) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, 1 * time.Second)
-	defer cancel() // this will send to done chan after 1 second. defer cancel actually CANCELS the timeout after we cleanup
-	// with timeout will send to done chan after 1 second
-
-	
 	switch locale, err := locale(ctx); {
 		case err != nil:
 			return "", err
@@ -91,7 +87,7 @@ func locale(ctx context.Context) (string, error) {
 	select {
 	case <-ctx.Done():
 		return "", fmt.Errorf("canceled")
-	case <-time.After(1*time.Minute): // return after 1 minute
+	case <-time.After(1*time.Minute): // auto cancel after 1 minute
 	}
 	return "EN/US", nil
 }

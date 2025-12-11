@@ -14,7 +14,7 @@ func main() {
 
 	var clickRegistered sync.WaitGroup
 
-	subscribe := func (c *sync.Cond, fn func()) {
+	subscribe := func(c *sync.Cond, fn func()) {
 		// we wait until the goroutine is "running" because that means it successfully registerd
 		// once its running then it waits for the cond event broadcast
 		var goroutineRunning sync.WaitGroup

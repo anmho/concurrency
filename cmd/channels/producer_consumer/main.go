@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	stringStream := make(chan string)// unbuffered channel
+	stringStream := make(chan string) // unbuffered channel
 
 	// producer
 	var wg sync.WaitGroup

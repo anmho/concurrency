@@ -10,7 +10,6 @@ func main() {
 	var stdoutBuff bytes.Buffer
 	defer stdoutBuff.WriteTo(os.Stdout)
 
-
 	// createa buffered chan of 4
 	intStream := make(chan int, 4)
 

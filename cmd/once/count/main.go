@@ -21,7 +21,7 @@ func main() {
 	wg.Add(routines)
 	for range routines {
 		go func() {
-			// increment 
+			// increment
 			once.Do(increment)
 			wg.Done()
 		}()

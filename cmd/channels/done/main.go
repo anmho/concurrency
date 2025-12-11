@@ -5,15 +5,14 @@ import (
 	"time"
 )
 
-
 func main() {
 	// launches a goroutine that does work and returns a channel that tells us when its cancelled
-	doWork := func (
-		done <- chan interface{},
-		strings <- chan string,
+	doWork := func(
+		done <-chan interface{},
+		strings <-chan string,
 	) <-chan interface{} {
 		terminated := make(chan interface{})
-		
+
 		go func() {
 			fmt.Println("doing work")
 			defer fmt.Println("doWork exited.")
@@ -33,11 +32,8 @@ func main() {
 			}
 		}()
 
-
 		return terminated
 	}
-
-	
 
 	done := make(chan interface{})
 
@@ -49,9 +45,8 @@ func main() {
 	terminated := doWork(done, stringsChan)
 	go func() {
 		time.Sleep(5 * time.Second)
-		close(done)// or done <- struct{}{}
+		close(done) // or done <- struct{}{}
 	}()
 	<-terminated
 
-	
 }

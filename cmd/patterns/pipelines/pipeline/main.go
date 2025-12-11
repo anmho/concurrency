@@ -4,9 +4,9 @@ import "fmt"
 
 func main() {
 
-	generator := func(done <- chan interface{}, integers ...int) <-chan int {
+	generator := func(done <-chan interface{}, integers ...int) <-chan int {
 		intStream := make(chan int)
-		go func () {
+		go func() {
 			defer close(intStream) // notify the consumer that we are done producing
 			for i := range integers {
 				select {
@@ -19,7 +19,7 @@ func main() {
 		return intStream
 	}
 
-	multiply := func (done <- chan interface{}, intStream <-chan int, multiplier int) <-chan int {
+	multiply := func(done <-chan interface{}, intStream <-chan int, multiplier int) <-chan int {
 		multipliedStream := make(chan int)
 
 		go func() {
@@ -38,7 +38,7 @@ func main() {
 		return multipliedStream
 	}
 
-	add := func (done <-chan interface{}, intStream <- chan int, additive int) <-chan int {
+	add := func(done <-chan interface{}, intStream <-chan int, additive int) <-chan int {
 		addedStream := make(chan int)
 		go func() {
 			defer close(addedStream) // signal done producing
@@ -54,7 +54,6 @@ func main() {
 
 		return addedStream
 	}
-
 
 	done := make(chan interface{})
 	defer close(done)

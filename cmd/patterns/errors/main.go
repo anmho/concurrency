@@ -6,16 +6,15 @@ import (
 )
 
 type Result struct {
-	Error error
+	Error    error
 	Response *http.Response
 }
-
 
 func main() {
 
 	// create a function that asynchronously results from get requests to a list of urls
 
-	checkStatus := func(done <-chan interface{}, urls ...string) <- chan *Result {
+	checkStatus := func(done <-chan interface{}, urls ...string) <-chan *Result {
 		results := make(chan *Result)
 
 		go func() {
@@ -46,5 +45,5 @@ func main() {
 			fmt.Printf("Response: %v\n", result.Response.Status)
 		}
 	}
-	
+
 }
