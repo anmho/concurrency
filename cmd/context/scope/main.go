@@ -10,6 +10,7 @@ func main() {
 }
 
 type ctxKey int
+
 const (
 	ctxUserID ctxKey = iota
 	ctxAuthToken
@@ -24,7 +25,7 @@ func processRequest(userID, authToken string) {
 func handleResponse(ctx context.Context) {
 	fmt.Printf(
 		"handling response for %v (%v)",
-		
+		ctx.Value(ctxUserID),
 		ctx.Value(ctxAuthToken),
 	)
 }

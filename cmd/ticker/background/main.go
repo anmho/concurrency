@@ -20,16 +20,15 @@ func backgroundJob(ctx context.Context) {
 	}
 }
 
-
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	var wg sync.WaitGroup
 
 	wg.Add(1)
-	
-	go func () {
+
+	go func() {
 		defer wg.Done()
 		backgroundJob(ctx)
 	}()

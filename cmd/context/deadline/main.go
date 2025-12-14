@@ -60,32 +60,30 @@ func printFarewell(ctx context.Context) error {
 }
 
 func genGreeting(ctx context.Context) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, 1 * time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
 	defer cancel() // this will send to done chan after 1 second. defer cancel actually CANCELS the timeout after we cleanup
 	// with timeout will send to done chan after 1 second
 
-	
 	switch locale, err := locale(ctx); {
-		case err != nil:
-			return "", err
-		case locale == "EN/US":
-			return "Hello", nil
-		default:
-			return "", errors.New("unsupported locale")
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "Hello", nil
+	default:
+		return "", errors.New("unsupported locale")
 	}
 }
 
 func genFarewell(ctx context.Context) (string, error) {
 	switch locale, err := locale(ctx); {
-		case err != nil:
-			return "", err
-		case locale == "EN/US":
-			return "Goodbye", nil
-		default:
-			return "", errors.New("unsupported locale")
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "Goodbye", nil
+	default:
+		return "", errors.New("unsupported locale")
 	}
 }
-
 
 func locale(ctx context.Context) (string, error) {
 	if deadline, ok := ctx.Deadline(); ok { // fail fast
@@ -96,11 +94,10 @@ func locale(ctx context.Context) (string, error) {
 		}
 	}
 
-
 	select {
 	case <-ctx.Done():
 		return "", ctx.Err()
-	case <-time.After(1*time.Minute): // return after 1 minute
+	case <-time.After(1 * time.Minute): // return after 1 minute
 	}
 	return "EN/US", nil
 }

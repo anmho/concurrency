@@ -1,4 +1,3 @@
-package greeting
 package main
 
 import (
@@ -62,32 +61,31 @@ func printFarewell(ctx context.Context) error {
 
 func genGreeting(ctx context.Context) (string, error) {
 	switch locale, err := locale(ctx); {
-		case err != nil:
-			return "", err
-		case locale == "EN/US":
-			return "Hello", nil
-		default:
-			return "", errors.New("unsupported locale")
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "Hello", nil
+	default:
+		return "", errors.New("unsupported locale")
 	}
 }
 
 func genFarewell(ctx context.Context) (string, error) {
 	switch locale, err := locale(ctx); {
-		case err != nil:
-			return "", err
-		case locale == "EN/US":
-			return "Goodbye", nil
-		default:
-			return "", errors.New("unsupported locale")
+	case err != nil:
+		return "", err
+	case locale == "EN/US":
+		return "Goodbye", nil
+	default:
+		return "", errors.New("unsupported locale")
 	}
 }
-
 
 func locale(ctx context.Context) (string, error) {
 	select {
 	case <-ctx.Done():
 		return "", fmt.Errorf("canceled")
-	case <-time.After(1*time.Minute): // auto cancel after 1 minute
+	case <-time.After(1 * time.Minute): // auto cancel after 1 minute
 	}
 	return "EN/US", nil
 }

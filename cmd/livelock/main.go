@@ -20,10 +20,10 @@ func main() {
 		}
 	}()
 
-	takeStep := func() {
-		cadence.L.Lock()
-		cadence.Wait()
-		cadence.L.Unlock()
-	}
+	// takeStep := func() {
+	// 	cadence.L.Lock()
+	// 	cadence.Wait()
+	// 	cadence.L.Unlock()
+	// }
 
 }
