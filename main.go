@@ -8,6 +8,7 @@ import (
 // DoWork returns two channels
 // 1) a channel for heartbeats
 // 2) A generator that streams values from input nums
+// We return heartbeats whenever a unit of work is initiated
 func DoWork(
 	done <-chan interface{},
 	nums ...int,
