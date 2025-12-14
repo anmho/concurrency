@@ -30,9 +30,8 @@ func main() {
 	wg.Add(1)
 	
 	go func () {
-		// defer wg.Done()
+		defer wg.Done()
 		backgroundJob(ctx)
-		
 	}()
 	wg.Wait()
 }
